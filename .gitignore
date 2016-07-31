@@ -1,0 +1,10 @@
+*.a
+*.apk
+*.apk.unaligned
+*.o
+*.o.d
+*.so
+.*.sw?
+/classes
+/classes.dex
+/lib
