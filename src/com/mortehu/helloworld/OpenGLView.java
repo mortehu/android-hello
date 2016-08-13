@@ -24,6 +24,7 @@ class OpenGLView extends GLSurfaceView {
   public static native void surfaceCreated();
   public static native void surfaceChanged(int width, int height);
   public static native void drawFrame();
+  public static native void touchEvent(float x, float y, int state);
 
   private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
     public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
@@ -78,6 +79,28 @@ class OpenGLView extends GLSurfaceView {
     setEGLContextFactory(new ContextFactory());
     setEGLConfigChooser(new ConfigChooser());
     setRenderer(new Renderer());
+  }
+
+  @Override
+  public boolean onTouchEvent(MotionEvent e) {
+    float x = e.getX();
+    float y = e.getY();
+
+    switch (e.getAction()) {
+      case MotionEvent.ACTION_DOWN:
+        touchEvent(x, y, 0);
+        break;
+
+      case MotionEvent.ACTION_MOVE:
+        touchEvent(x, y, 1);
+        break;
+
+      case MotionEvent.ACTION_UP:
+        touchEvent(x, y, 2);
+        break;
+    }
+
+    return true;
   }
 
   private static void logEglErrors(EGL10 egl) {
