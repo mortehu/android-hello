@@ -31,7 +31,7 @@ classes.dex: $(MAIN_CLASS)
 .DELETE_ON_ERROR:
 
 lib/armeabi/libhello-world.so: $(JNI_SOURCES)
-	NDK_LIBS_OUT=lib ndk-build
+	NDK_LIBS_OUT=lib ndk-build APP_STL=stlport_static
 
 $(TARGET_APK).unaligned: classes.dex AndroidManifest.xml lib/armeabi/libhello-world.so
 	aapt package -f -F $@ -M AndroidManifest.xml -I $(ANDROID_JAR) --rename-manifest-package $(PKGNAME) --version-code $(VERSION_CODE) --version-name $(VERSION_NAME) -c en
@@ -43,7 +43,7 @@ $(TARGET_APK).unaligned: classes.dex AndroidManifest.xml lib/armeabi/libhello-wo
 	zipalign -f 4 $< $@
 
 clean:
-	rm -rf classes/
+	rm -rf classes/ obj/ lib/
 	rm -f $(TARGET_APK) $(TARGET_APK).unaligned
 
 install: $(TARGET_APK)
