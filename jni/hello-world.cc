@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <vector>
 
 #include <jni.h>
 
@@ -23,9 +24,17 @@ static const char kFragmentShader[] =
 
 GLuint program;
 GLuint gvPositionHandle;
+GLuint indexBuffer;
+GLuint vertexBuffer;
 
 bool hold = false;
 float gray;
+
+// Converts an array offset in bytes to void*, as required by
+// glVertexAttribPointer.
+constexpr void* arrayOffset(uintptr_t offset) {
+  return reinterpret_cast<void*>(offset);
+}
 
 GLuint loadShader(GLenum shaderType, const char* pSource) {
   GLuint shader;
@@ -63,8 +72,11 @@ void surfaceChanged(int width, int height) {
 
   UTILS_GL_CHECK(gvPositionHandle = glGetAttribLocation(program, "vPosition"));
   UTILS_GL_CHECK(glViewport(0, 0, width, height));
+  UTILS_GL_CHECK(glGenBuffers(1, &indexBuffer));
+  UTILS_GL_CHECK(glGenBuffers(1, &vertexBuffer));
 }
 
+const GLshort gTriangleIndices[] = {0, 1, 2, 3, 4, 5};
 const GLfloat gTriangleVertices[] = {0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f};
 
 void drawFrame() {
@@ -76,11 +88,19 @@ void drawFrame() {
 
   UTILS_GL_CHECK(glUseProgram(program));
 
-  UTILS_GL_CHECK(glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0,
-                        gTriangleVertices));
+  UTILS_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer));
+  UTILS_GL_CHECK(glBufferData(GL_ARRAY_BUFFER, sizeof(gTriangleVertices),
+                              gTriangleVertices, GL_STREAM_DRAW));
+
+  UTILS_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer));
+  UTILS_GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(gTriangleIndices),
+                              gTriangleIndices, GL_STREAM_DRAW));
+
+  UTILS_GL_CHECK(glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE,
+                                       0, arrayOffset(0)));
   UTILS_GL_CHECK(glEnableVertexAttribArray(gvPositionHandle));
 
-  UTILS_GL_CHECK(glDrawArrays(GL_TRIANGLES, 0, 3));
+  UTILS_GL_CHECK(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr));
 }
 
 }  // namespace
