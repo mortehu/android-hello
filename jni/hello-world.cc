@@ -80,8 +80,7 @@ const GLshort gTriangleIndices[] = {0, 1, 2, 3, 4, 5};
 const GLfloat gTriangleVertices[] = {0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f};
 
 void drawFrame() {
-  if (!hold)
-    gray = std::max(0.0f, gray - 0.08f);
+  if (!hold) gray = std::max(0.0f, gray - 0.08f);
 
   UTILS_GL_CHECK(glClearColor(gray * 0.5, gray, gray, 1.0f));
   UTILS_GL_CHECK(glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT));
@@ -106,15 +105,15 @@ void drawFrame() {
 }  // namespace
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_mortehu_helloworld_OpenGLView_surfaceCreated(JNIEnv* env, jobject obj) {
-}
+Java_com_mortehu_helloworld_OpenGLView_surfaceCreated(JNIEnv* env,
+                                                      jobject obj) {}
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_mortehu_helloworld_OpenGLView_surfaceChanged(JNIEnv* env, jobject obj,
                                                       jint width, jint height) {
   try {
     surfaceChanged(width, height);
-  } catch(std::runtime_error& e) {
+  } catch (std::runtime_error& e) {
     error("Runtime error: %s", e.what());
   }
 }
@@ -123,23 +122,25 @@ extern "C" JNIEXPORT void JNICALL
 Java_com_mortehu_helloworld_OpenGLView_drawFrame(JNIEnv* env, jobject obj) {
   try {
     drawFrame();
-  } catch(std::runtime_error& e) {
+  } catch (std::runtime_error& e) {
     error("Runtime error: %s", e.what());
   }
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_mortehu_helloworld_OpenGLView_touchEvent(JNIEnv* env, jobject obj, float x, float y, int state) {
+Java_com_mortehu_helloworld_OpenGLView_touchEvent(JNIEnv* env, jobject obj,
+                                                  float x, float y, int state) {
   switch (state) {
-  case 0:
-    gray = 1.0f; hold = true; break;
-    break;
+    case 0:
+      gray = 1.0f;
+      hold = true;
+      break;
 
-  case 1:
-    break;
+    case 1:
+      break;
 
-  case 2:
-    hold = false;
-    break;
+    case 2:
+      hold = false;
+      break;
   }
 }
