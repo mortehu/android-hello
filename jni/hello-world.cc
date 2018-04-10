@@ -33,7 +33,12 @@ float gray;
 // Converts an array offset in bytes to void*, as required by
 // glVertexAttribPointer.
 constexpr void* arrayOffset(uintptr_t offset) {
-  return reinterpret_cast<void*>(offset);
+  union union_type {
+    constexpr union_type(uintptr_t i) : i_{i} {}
+    uintptr_t i_;
+    void* v_;
+  } x{offset};
+  return x.v_;
 }
 
 GLuint loadShader(GLenum shaderType, const char* pSource) {
