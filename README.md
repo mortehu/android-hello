@@ -2,4 +2,4 @@
 
 ## Screenshot
 
-![Screenshot of running app](media/screenshot.png)
+<img src=media/screenshot.png width=400>
