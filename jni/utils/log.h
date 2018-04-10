@@ -28,7 +28,7 @@ static void error(Args... args) {
     auto error = glGetError();                                            \
     if (error) {                                                          \
       std::ostringstream msg;                                             \
-      msg << __FILE__ << ":" << __LINE__ << ": GL call failed" << #glcode \
+      msg << __FILE__ << ":" << __LINE__ << ": GL call failed: " << #glcode \
           << " (" << error << ")";                                        \
       throw std::runtime_error(msg.str());                                \
     }                                                                     \
